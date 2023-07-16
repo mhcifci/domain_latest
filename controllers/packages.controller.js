@@ -56,8 +56,38 @@ const create = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    await packagesService.update(req.params.uuid, req.body);
+    const data = await packagesService.getOne(req.params.uuid);
+    delete data.dataValues.id;
+    delete data.dataValues.createdAt;
+    delete data.dataValues.updatedAt;
+    return response.success(res, data);
+  } catch (err) {
+    if (err.message === "NOTHING_FOUND") {
+      return response.badRequest(res, "Paket bulunamadı.");
+    }
+    return response.badRequest(res, err.message);
+  }
+};
+
+const remove = async (req, res) => {
+  try {
+    await packagesService.remove(req.params.uuid);
+    return response.success(res, null, null);
+  } catch (err) {
+    if (err.message === "NOTHING_FOUND") {
+      return response.badRequest(res, "Promosyon kodu bulunamadı.");
+    }
+    return response.badRequest(res, err.message);
+  }
+};
+
 module.exports = {
   getAll,
   create,
   getOne,
+  update,
+  remove,
 };

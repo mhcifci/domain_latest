@@ -50,8 +50,60 @@ const create = async (data = {}) => {
     throw err;
   }
 };
+
+const update = async (uuid, data) => {
+  try {
+    const checkPromoCodeIsExist = await PromoCodes.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    if (!checkPromoCodeIsExist) {
+      throw new Error("NOTHING_FOUND");
+    }
+
+    return await PromoCodes.update(
+      {
+        title: data.title,
+        code: data.code,
+        discount: data.discount,
+        description: data.description || null,
+      },
+      {
+        where: {
+          uuid: uuid,
+        },
+      }
+    );
+  } catch (err) {
+    throw err;
+  }
+};
+const remove = async (uuid) => {
+  try {
+    const checkPromoCodeIsExist = await PromoCodes.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+
+    if (!checkPromoCodeIsExist) {
+      throw new Error("NOTHING_FOUND");
+    }
+
+    return await PromoCodes.destroy({
+      where: {
+        uuid: uuid,
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
 module.exports = {
   getAll,
   getOne,
   create,
+  update,
+  remove,
 };

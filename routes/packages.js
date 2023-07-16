@@ -8,6 +8,8 @@ const {
   getAll,
   create,
   getOne,
+  update,
+  remove,
 } = require("../controllers/packages.controller");
 
 router.get(
@@ -69,6 +71,42 @@ router.post(
     next();
   },
   create
+);
+
+router.put(
+  "/:uuid",
+  authMiddleware,
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Eğer hata varsa, hatanın içindeki sadece msg değerini döndür.
+      const errorArray = [];
+      errors.array().map((err) => errorArray.push(err.msg));
+      return response.badRequest(res, errorArray);
+    }
+    next();
+  },
+  update
+);
+
+router.delete(
+  "/:uuid",
+  [
+    check("uuid").notEmpty().withMessage("UUID boş bırakılamaz."),
+    check("uuid").isUUID().withMessage("UUID formatı hatalı."),
+  ],
+  authMiddleware,
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Eğer hata varsa, hatanın içindeki sadece msg değerini döndür.
+      const errorArray = [];
+      errors.array().map((err) => errorArray.push(err.msg));
+      return response.badRequest(res, errorArray);
+    }
+    next();
+  },
+  remove
 );
 
 module.exports = router;

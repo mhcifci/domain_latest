@@ -51,10 +51,6 @@ router.put(
   [
     check("uuid").notEmpty().withMessage("UUID boş bırakılamaz."),
     check("uuid").isUUID().withMessage("UUID formatı hatalı."),
-    check("domain")
-      .notEmpty()
-      .isLength({ max: 105 })
-      .withMessage("Domain boş bırakılamaz."),
   ],
   authMiddleware,
   (req, res, next) => {

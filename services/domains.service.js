@@ -76,22 +76,25 @@ const update = async (user, uuid, data = {}) => {
     if (!checkDomainIsExist) {
       throw new Error("NOTHING_FOUND");
     }
-    // Değiştirilecek olan domain mevcut mu?
-    const checkDomainIsExist2 = await Domains.findOne({
-      where: {
-        user_id: user,
-        domain: data.domain,
-      },
-    });
-    if (checkDomainIsExist2) {
-      throw new Error("IS_EXIST");
+
+    if (data.domain) {
+      // Değiştirilecek olan domain mevcut mu?
+      const checkDomainIsExist2 = await Domains.findOne({
+        where: {
+          user_id: user,
+          domain: data.domain,
+        },
+      });
+      if (checkDomainIsExist2) {
+        throw new Error("IS_EXIST");
+      }
+      await validateURL(data.domain);
     }
-    await validateURL(data.domain);
 
     return await Domains.update(
       {
-        domain: data.domain,
-        description: data.description || null,
+        domain: data.domain || checkDomainIsExist.domain,
+        description: data.description || checkDomainIsExist.description,
       },
       {
         where: {
