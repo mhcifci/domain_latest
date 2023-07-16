@@ -1,6 +1,7 @@
 const Users = require("../models/Users");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
+const UserReferenceDetail = require("../models/UserReferenceDetail");
 
 const login = async (user = {}) => {
   try {
@@ -56,6 +57,14 @@ const register = async (user = {}) => {
       is_active: 1,
       is_verified: 0,
     };
+    const createdUser = await Users.create(userData);
+    await saveUserDetails({
+      user_uuid: createdUser.uuid,
+      refer: user.refer || null,
+      campaign: user.campaign || null,
+      medium: user.medium || null,
+      source: user.source || null,
+    });
     return await Users.create(userData);
   } catch (err) {
     throw err;
@@ -75,6 +84,14 @@ const generateAuthToken = async (user = {}) => {
       }
     );
     return token;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const saveUserDetails = async (details = {}) => {
+  try {
+    return await UserReferenceDetail.create(details);
   } catch (err) {
     throw err;
   }

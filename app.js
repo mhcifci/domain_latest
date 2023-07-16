@@ -14,6 +14,7 @@ app.use("/auth", require("./routes/auth"));
 app.use("/domains", require("./routes/domains"));
 app.use("/packages", require("./routes/packages"));
 app.use("/promo-codes", require("./routes/promocodes"));
+app.use("/verify", require("./routes/verify"));
 
 app.listen(port, () => {
   console.log(`Backend server is starting on ${port}`);
